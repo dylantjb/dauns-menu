@@ -51,3 +51,89 @@ add_action( 'wp_enqueue_scripts', function () {
 		true
 	);
 } );
+
+/* =========================================================================
+   HELPERS
+   ========================================================================= */
+
+function dauns_mn_img_id( $ref ) {
+	$ref = trim( $ref );
+	if ( $ref === '' ) { return 0; }
+	if ( ctype_digit( $ref ) ) { return (int) $ref; }
+	if ( preg_match( '#^(https?://|/)#', $ref ) ) { return 0; }
+
+	static $cache = array();
+	if ( isset( $cache[ $ref ] ) ) { return $cache[ $ref ]; }
+
+	global $wpdb;
+	$cache[ $ref ] = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT post_id FROM {$wpdb->postmeta}
+		 WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s
+		 ORDER BY post_id DESC LIMIT 1",
+		'%' . $wpdb->esc_like( $ref ) . '%'
+	) );
+	return $cache[ $ref ];
+}
+
+function dauns_mn_media( $img, $alt, $name ) {
+	if ( $img === '' ) { return ''; }
+
+	$id = dauns_mn_img_id( $img );
+	if ( $id ) {
+		$thumb = wp_get_attachment_image( $id, 'gallery-thumb', false, array( 'class' => 'mn-img', 'alt' => $alt, 'loading' => 'lazy' ) );
+		$full  = wp_get_attachment_image_url( $id, 'large' );
+	} elseif ( preg_match( '#^(https?://|/)#', $img ) ) {
+		$thumb = '<img class="mn-img" loading="lazy" alt="' . esc_attr( $alt ) . '" src="' . esc_url( $img ) . '">';
+		$full  = $img;
+	} else {
+		return '';
+	}
+
+	if ( ! $thumb || ! $full ) { return ''; }
+	return '<a class="mn-zoom" href="' . esc_url( $full ) . '" data-caption="' . esc_attr( $name ) . '">' . $thumb . '</a>';
+}
+
+/* =========================================================================
+   SHORTCODES
+   ========================================================================= */
+
+add_shortcode( 'menu-sub', function ( $atts ) {
+	$a = shortcode_atts( array( 'title' => '', 'note' => '' ), $atts );
+	$n = $a['note'] !== '' ? '<span class="mn-sub-note">' . esc_html( $a['note'] ) . '</span>' : '';
+	return '<h3 class="mn-sub">' . esc_html( $a['title'] ) . $n . '</h3>';
+} );
+
+add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
+	$a  = shortcode_atts( array( 'title' => '', 'badge' => '' ), $atts );
+	$id = sanitize_title( $a['title'] );
+	$b = $a['badge'] ? '<span class="mn-badge">' . esc_html( $a['badge'] ) . '</span>' : '';
+	return '<section class="mn-sec" id="' . esc_attr( $id ) . '" data-title="' . esc_attr( $a['title'] ) . '">'
+		. '<h2 class="mn-h"><button type="button" class="mn-h-btn">'
+		. '<span class="mn-h-t">' . esc_html( $a['title'] ) . '</span>' . $b . '</button></h2>'
+		. '<div class="mn-sec-body">' . do_shortcode( $content ) . '</div></section>';
+} );
+
+add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
+	$a = shortcode_atts( array(
+		'name' => '', 'img' => '', 'alt' => '', 'price' => '',
+	), $atts );
+
+	$desc = '';
+	if ( $content !== '' ) {
+		$t = preg_replace( array( '/<\/?p[^>]*>/i', '/<br\s*\/?>/i' ), ' ', $content );
+		$t = trim( preg_replace( '/\s+/', ' ', $t ) );
+		if ( $t !== '' ) { $desc = '<p class="mn-desc">' . wp_kses_post( $t ) . '</p>'; }
+	}
+
+	$alt   = $a['alt'] !== '' ? $a['alt'] : $a['name'];
+	$media = dauns_mn_media( $a['img'], $alt, $a['name'] );
+
+	$price = $a['price'] !== '' ? '<span class="mn-price">&pound;' . esc_html( $a['price'] ) . '</span>' : '';
+
+	return '<div class="mn-item">'
+		. '<div class="mn-item-b"><span class="mn-name">' . esc_html( $a['name'] ) . '</span>'
+		. $price . $desc . '</div>'
+		. ( $media ? '<span class="mn-thumb">' . $media . '</span>' : '' )
+		. '</div>';
+
+} );

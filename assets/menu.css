@@ -1,1 +1,137 @@
 /* Dauns - menu page. */
+
+
+/* PAGE WRAPPER */
+
+.page-template-template-menu .entry-content {
+  opacity: 1 !important;      /* neutralise the theme's fade-in */
+  transform: none !important;
+}
+.page-template-template-menu .central-column-thin {
+  max-width: 1400px;
+  position: relative;
+  z-index: 2;                 /* keep decorative parallax images behind */
+}
+.page-template-template-menu #page {
+  overflow: hidden;
+}
+
+
+/* SECTIONS & HEADINGS */
+
+.mn-sec {
+  margin: 0 0 2.4rem;
+}
+.mn-h { margin: 0; }
+.mn-h-btn {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  width: 100%;
+  padding: .5rem 0;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid var(--color-royal-blue);
+  text-align: left;
+  cursor: default;
+}
+.mn-h-t {
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 17px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--color-royal-blue);
+}
+.mn-badge {
+  margin-left: auto;
+  padding: .28rem .5rem;
+  background: var(--color-paler-green);
+  color: var(--color-royal-blue);
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+
+/* SUB-HEADS */
+
+.mn-sub {
+  margin: 1.6rem 0 .6rem;
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 13px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #7A4A0D;
+}
+.mn-sub-note {
+  display: block;
+  margin: .2rem 0 0;
+  font-family: 'HKRequisite-Light', sans-serif;
+  font-size: 12px;
+  letter-spacing: .03em;
+  text-transform: none;
+  color: #565845;
+}
+
+
+/* DISH ROWS */
+
+.mn-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.3rem 0;
+  border-bottom: 1px dotted var(--color-muddy-gold);
+}
+.mn-item:last-of-type { border-bottom: 0; }
+.mn-item-b { flex: 1; min-width: 0; padding-bottom 4px;}
+.mn-sec-body > br { display: none; }
+.mn-sec-body > p:empty { display: none; }
+
+
+.mn-thumb {
+  flex: 0 0 140px;
+  width: 140px;
+  height: 140px;
+  overflow: hidden;
+  background: var(--color-paler-green);
+}
+.mn-zoom { display: block; width: 100%; height: 100%; cursor: zoom-in; }
+.mn-thumb img,
+.mn-zoom img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+
+/* NAMES / DESCRIPTIONS / PRICES */
+
+.mn-name {
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 16px;
+  letter-spacing: .03em;
+}
+.mn-name-lg { font-size: 20px; }
+
+.mn-desc {
+  margin: .3rem 0 0;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #565845;
+  opacity: 1;
+}
+
+.mn-price {
+  float: right;
+  padding-left: 1rem;
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 16px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .mn-thumb { flex: 0 0 92px; width: 92px; height: 92px; }
+  .mn-name-lg { font-size: 18px; }
+}
