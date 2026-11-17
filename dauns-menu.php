@@ -56,6 +56,26 @@ add_action( 'wp_enqueue_scripts', function () {
    HELPERS
    ========================================================================= */
 
+function dauns_mn_tags( $raw ) {
+	if ( ! $raw ) { return ''; }
+	$map = array(
+		'gf'    => 'Gluten free',
+		'gfo'   => 'Gluten-free option',
+		'nfo'   => 'Nut-free option',
+		'nuts'  => 'Contains nuts',
+		'alc'   => 'Contains alcohol',
+		'spicy' => 'Spicy',
+	);
+	$out = '';
+	foreach ( explode( ',', $raw ) as $t ) {
+		$t = strtolower( trim( $t ) );
+		if ( isset( $map[ $t ] ) ) {
+			$out .= '<span class="mn-tag mn-tag-' . esc_attr( $t ) . '">' . esc_html( $map[ $t ] ) . '</span>';
+		}
+	}
+	return $out ? '<p class="mn-tags">' . $out . '</p>' : '';
+}
+
 function dauns_mn_img_id( $ref ) {
 	$ref = trim( $ref );
 	if ( $ref === '' ) { return 0; }
@@ -116,7 +136,7 @@ add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 
 add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$a = shortcode_atts( array(
-		'name' => '', 'img' => '', 'alt' => '', 'featured' => '', 'opts' => '', 'price' => '',
+		'name' => '', 'tags' => '', 'img' => '', 'alt' => '', 'featured' => '', 'opts' => '', 'price' => '',
 	), $atts );
 
 	// Lift [menu-option] lines out of the description before formatting it.
@@ -152,13 +172,13 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 			. '<div class="mn-card-head"><span class="mn-name mn-name-lg">' . esc_html( $a['name'] ) . '</span>'
 			. $price . '</div>'
 			. '<div class="mn-card-media">' . $media . '</div>'
-			. '<div class="mn-card-body">' . $desc . $options . '</div>'
+			. '<div class="mn-card-body">' . $desc . $options . dauns_mn_tags( $a['tags'] ) . '</div>'
 			. '</div>';
 	}
 
 	return '<div class="mn-item">'
 		. '<div class="mn-item-b"><span class="mn-name">' . esc_html( $a['name'] ) . '</span>'
-		. $price . $desc . $options . '</div>'
+		. $price . $desc . $options . dauns_mn_tags( $a['tags'] ) . '</div>'
 		. ( $media ? '<span class="mn-thumb">' . $media . '</span>' : '' )
 		. '</div>';
 

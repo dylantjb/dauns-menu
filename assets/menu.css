@@ -157,6 +157,31 @@
 }
 
 
+/* TAGS */
+
+.mn-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin: .5rem 0 0; }
+
+.mn-tag {
+  padding: .18rem .38rem;
+  border: 1px solid #565845;
+  color: #565845;
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.mn-tag-gf,
+.mn-tag-gfo,
+.mn-tag-nfo { border-color: #1D4BA1; color: #1D4BA1; }
+.mn-tag-alc { border-color: #565845; color: #565845; }  /* matches base; listed for clarity */
+.mn-tag-nuts,
+.mn-tag-spicy {
+  background: #7A4A0D;
+  border-color: #7A4A0D;
+  color: #F7F3EA;
+}
+
+
 /* OPTION LISTS */
 .entry-content p.mn-opts-h {
   margin: .7rem 0 .35rem;
