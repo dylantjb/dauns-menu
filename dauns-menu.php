@@ -118,6 +118,14 @@ function dauns_mn_media( $img, $alt, $name, $big = false ) {
    SHORTCODES
    ========================================================================= */
 
+add_shortcode( 'menu-note', function ( $atts, $content = '' ) {
+	return '<div class="mn-note">' . wp_kses_post( $content ) . '</div>';
+} );
+
+add_shortcode( 'menu-deal', function ( $atts, $content = '' ) {
+	return '<p class="mn-deal">' . wp_kses_post( $content ) . '</p>';
+} );
+
 add_shortcode( 'menu-sub', function ( $atts ) {
 	$a = shortcode_atts( array( 'title' => '', 'note' => '' ), $atts );
 	$n = $a['note'] !== '' ? '<span class="mn-sub-note">' . esc_html( $a['note'] ) . '</span>' : '';

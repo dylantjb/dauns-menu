@@ -17,6 +17,30 @@
 }
 
 
+/* NOTES */
+
+.mn-note {
+  background: var(--color-off-white);
+  border-left: 5px solid var(--color-dark-orange);
+  padding: 1.1rem 1.3rem;
+  margin: 0 0 2rem;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.mn-note strong { font-family: 'HKRequisite-Medium', sans-serif; }
+
+.mn-deal {
+  margin: .8rem 0 0;
+  padding: .7rem 1rem;
+  background: var(--color-royal-blue);
+  border-left: 6px solid var(--color-dark-orange);
+  color: var(--color-off-white);
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 13px;
+  letter-spacing: .04em;
+}
+
+
 /* SECTIONS & HEADINGS */
 
 .mn-sec {
@@ -206,7 +230,7 @@
   color: #565845;
 }
 .entry-content ul.mn-opts li:before {
-  content: '-';
+  content: '–';
   position: absolute;
   left: 0;
   color: var(--color-muddy-gold);
