@@ -116,8 +116,24 @@ add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 
 add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$a = shortcode_atts( array(
-		'name' => '', 'img' => '', 'alt' => '', 'featured' => '', 'price' => '',
+		'name' => '', 'img' => '', 'alt' => '', 'featured' => '', 'opts' => '', 'price' => '',
 	), $atts );
+
+	// Lift [menu-option] lines out of the description before formatting it.
+	$option_rows = '';
+	if ( preg_match_all( '/\[menu-option\s+([^\]]*)\]/i', $content, $mm ) ) {
+		foreach ( $mm[1] as $attr_string ) {
+			$o = shortcode_parse_atts( $attr_string );
+			if ( ! is_array( $o ) || empty( $o['label'] ) ) { continue; }
+			$note = isset( $o['note'] ) ? ' <em class="mn-opt-n">' . esc_html( $o['note'] ) . '</em>' : '';
+			$option_rows .= '<li>' . esc_html( $o['label'] ) . $note . '</li>';
+		}
+		$content = preg_replace( '/\[menu-option\s+[^\]]*\]/i', '', $content );
+	}
+	$options = $option_rows
+		? ( $a['opts'] !== '' ? '<p class="mn-opts-h">' . esc_html( $a['opts'] ) . '</p>' : '' )
+			. '<ul class="mn-opts">' . $option_rows . '</ul>'
+		: '';
 
 	$desc = '';
 	if ( $content !== '' ) {
@@ -136,13 +152,13 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 			. '<div class="mn-card-head"><span class="mn-name mn-name-lg">' . esc_html( $a['name'] ) . '</span>'
 			. $price . '</div>'
 			. '<div class="mn-card-media">' . $media . '</div>'
-			. '<div class="mn-card-body">' . $desc . '</div>'
+			. '<div class="mn-card-body">' . $desc . $options . '</div>'
 			. '</div>';
 	}
 
 	return '<div class="mn-item">'
 		. '<div class="mn-item-b"><span class="mn-name">' . esc_html( $a['name'] ) . '</span>'
-		. $price . $desc . '</div>'
+		. $price . $desc . $options . '</div>'
 		. ( $media ? '<span class="mn-thumb">' . $media . '</span>' : '' )
 		. '</div>';
 
