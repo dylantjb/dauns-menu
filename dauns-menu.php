@@ -75,13 +75,14 @@ function dauns_mn_img_id( $ref ) {
 	return $cache[ $ref ];
 }
 
-function dauns_mn_media( $img, $alt, $name ) {
+function dauns_mn_media( $img, $alt, $name, $big = false ) {
 	if ( $img === '' ) { return ''; }
 
-	$id = dauns_mn_img_id( $img );
+	$size = $big ? 'large' : 'gallery-thumb';
+	$id   = dauns_mn_img_id( $img );
 	if ( $id ) {
-		$thumb = wp_get_attachment_image( $id, 'gallery-thumb', false, array( 'class' => 'mn-img', 'alt' => $alt, 'loading' => 'lazy' ) );
-		$full  = wp_get_attachment_image_url( $id, 'large' );
+		$thumb = wp_get_attachment_image( $id, $size, false, array( 'class' => 'mn-img', 'alt' => $alt, 'loading' => 'lazy' ) );
+		$full  = wp_get_attachment_image_url( $id, $big ? 'full' : 'large' );
 	} elseif ( preg_match( '#^(https?://|/)#', $img ) ) {
 		$thumb = '<img class="mn-img" loading="lazy" alt="' . esc_attr( $alt ) . '" src="' . esc_url( $img ) . '">';
 		$full  = $img;
@@ -115,7 +116,7 @@ add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 
 add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$a = shortcode_atts( array(
-		'name' => '', 'img' => '', 'alt' => '', 'price' => '',
+		'name' => '', 'img' => '', 'alt' => '', 'featured' => '', 'price' => '',
 	), $atts );
 
 	$desc = '';
@@ -126,9 +127,18 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	}
 
 	$alt   = $a['alt'] !== '' ? $a['alt'] : $a['name'];
-	$media = dauns_mn_media( $a['img'], $alt, $a['name'] );
+	$media = dauns_mn_media( $a['img'], $alt, $a['name'], ! empty( $a['featured'] ) );
 
 	$price = $a['price'] !== '' ? '<span class="mn-price">&pound;' . esc_html( $a['price'] ) . '</span>' : '';
+
+	if ( $a['featured'] && $media ) {
+		return '<div class="mn-card">'
+			. '<div class="mn-card-head"><span class="mn-name mn-name-lg">' . esc_html( $a['name'] ) . '</span>'
+			. $price . '</div>'
+			. '<div class="mn-card-media">' . $media . '</div>'
+			. '<div class="mn-card-body">' . $desc . '</div>'
+			. '</div>';
+	}
 
 	return '<div class="mn-item">'
 		. '<div class="mn-item-b"><span class="mn-name">' . esc_html( $a['name'] ) . '</span>'

@@ -11,4 +11,8 @@
 			body.replaceChild(p, n);
 		});
 	});
+	if (window.jQuery && jQuery.fancybox) {
+		jQuery('.mn-zoom').fancybox({ loop: false, buttons: ['close'] });
+	}
+
 })();
