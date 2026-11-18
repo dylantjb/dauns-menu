@@ -63,7 +63,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
 	/* Fancybox first, so it is on the page before menu.js runs. */
 	wp_enqueue_style(
-		'fancybox-css',
+		'fancybox',
 		'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css'
 	);
 	wp_enqueue_script(
