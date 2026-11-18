@@ -58,7 +58,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		'dauns-menu',
 		DAUNS_MENU_URL . 'assets/menu.css',
 		array(),
-		DAUNS_MENU_VERSION
+		filemtime( DAUNS_MENU_PATH . 'assets/menu.css' )
 	);
 
 	/* Fancybox first, so it is on the page before menu.js runs. */
@@ -222,3 +222,21 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 		. '</div>';
 
 } );
+
+/**
+ * Version the menu assets by file modification time, so editing a file is
+ * all it takes to bust the browser cache — no version bumping.
+ */
+add_filter( 'style_loader_src', function ( $src, $handle ) {
+	if ( 'dauns-menu' === $handle ) {
+		$src = add_query_arg( 'ver', filemtime( DAUNS_MENU_PATH . 'assets/menu.css' ), $src );
+	}
+	return $src;
+}, 99999, 2 );
+
+add_filter( 'script_loader_src', function ( $src, $handle ) {
+	if ( 'dauns-menu' === $handle ) {
+		$src = add_query_arg( 'ver', filemtime( DAUNS_MENU_PATH . 'assets/menu.js' ), $src );
+	}
+	return $src;
+}, 10, 2 );
