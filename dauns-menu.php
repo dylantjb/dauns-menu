@@ -27,7 +27,33 @@ define( 'DAUNS_MENU_URL', plugin_dir_url( __FILE__ ) );
  * at priority 10, which would print our CSS ahead of the theme's and lose the
  * cascade everywhere specificity is equal.
  */
+/**
+ * Does this request render anything from the menu shortcodes?
+ */
+function dauns_mn_has_menu_assets() {
+	if ( is_page_template( 'template-menu.php' ) ) {
+		return true;
+	}
+	if ( ! is_singular() ) {
+		return false;
+	}
+	$post = get_queried_object();
+	if ( ! $post || empty( $post->post_content ) ) {
+		return false;
+	}
+	foreach ( array( 'menu-item', 'menu-section', 'menu-nav', 'menu-note', 'menu-deal', 'menu-sub' ) as $sc ) {
+		if ( has_shortcode( $post->post_content, $sc ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 add_action( 'wp_enqueue_scripts', function () {
+	if ( ! dauns_mn_has_menu_assets() ) {
+		return;
+	}
+
 	wp_enqueue_style(
 		'dauns-menu',
 		DAUNS_MENU_URL . 'assets/menu.css',
