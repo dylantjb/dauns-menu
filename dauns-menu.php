@@ -21,7 +21,11 @@ define( 'DAUNS_MENU_URL', plugin_dir_url( __FILE__ ) );
 
 
 /**
- * Assets.
+ * Assets — menu page only.
+ *
+ * Priority 20 so this queues AFTER the theme's stylesheets. A plugin registers
+ * at priority 10, which would print our CSS ahead of the theme's and lose the
+ * cascade everywhere specificity is equal.
  */
 add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style(
@@ -31,6 +35,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		DAUNS_MENU_VERSION
 	);
 
+	/* Fancybox first, so it is on the page before menu.js runs. */
 	wp_enqueue_style(
 		'fancybox-css',
 		'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css'
@@ -50,7 +55,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		DAUNS_MENU_VERSION,
 		true
 	);
-} );
+}, 20 );
 
 /* =========================================================================
    HELPERS
