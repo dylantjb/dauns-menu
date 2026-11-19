@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Dauns Menu
  * Description:       Shortcodes, styling and behaviour for the Dauns menu page.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Dylan Barker
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DAUNS_MENU_VERSION', '1.0.0' );
+define( 'DAUNS_MENU_VERSION', '1.0.1' );
 define( 'DAUNS_MENU_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DAUNS_MENU_URL', plugin_dir_url( __FILE__ ) );
 
@@ -182,6 +182,9 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$option_rows = '';
 	if ( preg_match_all( '/\[menu-option\s+([^\]]*)\]/i', $content, $mm ) ) {
 		foreach ( $mm[1] as $attr_string ) {
+			/* wptexturize() runs before do_shortcode() and rewrites the
+			   straight quote delimiters as HTML entities. Neither form is
+			   a delimiter to shortcode_parse_atts(), so normalise both. */
 			$attr_string = dauns_mn_fix_quotes( $attr_string );
 			$o = shortcode_parse_atts( $attr_string );
 			if ( ! is_array( $o ) || empty( $o['label'] ) ) { continue; }
@@ -224,13 +227,16 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 
 } );
 
-/* wptexturize() runs at the_content priority 10, before do_shortcode() at 11,
-   and rewrites the straight quote delimiters inside shortcode attributes as
-   curly quotes. shortcode_parse_atts() doesn't recognise those as delimiters,
-   so it read the whole attribute string as one unquoted token and cut it at the
-   first space. Put the straight quotes back inside shortcode brackets. */
+/* wptexturize() runs at the_content priority 10 and rewrites straight
+   quotes as HTML entities (&#8220; and &#8221;), which shortcode_parse_atts()
+   does not recognise as delimiters. Convert both the entity and the raw
+   character form back to a plain quote inside shortcode brackets only. */
 function dauns_mn_fix_quotes( $text ) {
-	return str_replace( array( "\xE2\x80\x9C", "\xE2\x80\x9D" ), '"', $text );
+	return str_replace(
+		array( '&#8220;', '&#8221;', '&ldquo;', '&rdquo;', "\xE2\x80\x9C", "\xE2\x80\x9D" ),
+		'"',
+		$text
+	);
 }
 
 add_filter( 'the_content', function ( $content ) {
