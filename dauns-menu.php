@@ -182,6 +182,7 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$option_rows = '';
 	if ( preg_match_all( '/\[menu-option\s+([^\]]*)\]/i', $content, $mm ) ) {
 		foreach ( $mm[1] as $attr_string ) {
+			$attr_string = dauns_mn_fix_quotes( $attr_string );
 			$o = shortcode_parse_atts( $attr_string );
 			if ( ! is_array( $o ) || empty( $o['label'] ) ) { continue; }
 			$note = isset( $o['note'] ) ? ' <em class="mn-opt-n">' . esc_html( $o['note'] ) . '</em>' : '';
@@ -222,6 +223,24 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 		. '</div>';
 
 } );
+
+/* wptexturize() runs at the_content priority 10, before do_shortcode() at 11,
+   and rewrites the straight quote delimiters inside shortcode attributes as
+   curly quotes. shortcode_parse_atts() doesn't recognise those as delimiters,
+   so it read the whole attribute string as one unquoted token and cut it at the
+   first space. Put the straight quotes back inside shortcode brackets. */
+function dauns_mn_fix_quotes( $text ) {
+	return str_replace( array( "\xE2\x80\x9C", "\xE2\x80\x9D" ), '"', $text );
+}
+
+add_filter( 'the_content', function ( $content ) {
+	if ( false === strpos( $content, '[menu-' ) ) {
+		return $content;
+	}
+	return preg_replace_callback( '/\[[^\]]*\]/', function ( $tag ) {
+		return dauns_mn_fix_quotes( $tag[0] );
+	}, $content );
+}, 10 );
 
 /**
  * Version the menu assets by file modification time, so editing a file is
