@@ -41,6 +41,7 @@ description.
 | `[menu-option label="..."]` | A choice under a dish, e.g. sizes. `note="..."` adds a note beside it. `opts="..."` on the dish titles the list. |
 | `[menu-note]` | A cream panel for a message from the kitchen. |
 | `[menu-deal]` | A blue banner for an offer. |
+| `[menu-nav]` | The jump nav. Place it once, near the top of the page. |
 
 ## Photos
 

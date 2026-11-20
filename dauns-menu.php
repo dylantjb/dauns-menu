@@ -226,6 +226,18 @@ function dauns_menu_check( $content ) {
    SHORTCODES
    ========================================================================= */
 
+add_shortcode( 'menu-nav', function () {
+	return '<nav class="mn-jump" id="mn-jump" aria-label="Menu sections"></nav>';
+} );
+
+add_shortcode( 'menu-sub', function ( $atts ) {
+	$a  = shortcode_atts( array( 'title' => '', 'note' => '' ), $atts );
+	$id = sanitize_title( $a['title'] );
+	$n  = $a['note'] !== '' ? '<span class="mn-sub-note">' . esc_html( $a['note'] ) . '</span>' : '';
+	return '<h3 class="mn-sub" id="' . esc_attr( $id ) . '" data-title="' . esc_attr( $a['title'] ) . '">'
+		. esc_html( $a['title'] ) . $n . '</h3>';
+} );
+
 add_shortcode( 'menu-note', function ( $atts, $content = '' ) {
 	return '<div class="mn-note">' . wp_kses_post( $content ) . '</div>';
 } );
