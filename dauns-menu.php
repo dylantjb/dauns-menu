@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Dauns Menu
  * Description:       Shortcodes, styling and behaviour for the Dauns menu page.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Dylan Barker
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DAUNS_MENU_VERSION', '1.0.1' );
+define( 'DAUNS_MENU_VERSION', '1.0.2' );
 define( 'DAUNS_MENU_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DAUNS_MENU_URL', plugin_dir_url( __FILE__ ) );
 
@@ -146,6 +146,83 @@ function dauns_mn_media( $img, $alt, $name, $big = false ) {
 }
 
 /* =========================================================================
+   EDITOR GUARD — catches the failure mode the shortcodes can't report
+   themselves: an unbalanced tag silently swallows the content that follows.
+   ========================================================================= */
+
+function dauns_menu_check( $content ) {
+	$problems = array();
+
+	preg_match_all( '/\[\/?menu-(?:section|item)\b[^\]]*\]/i', $content, $m );
+
+	$stack = array();
+
+	foreach ( $m[0] as $tag ) {
+		$closing = ( 0 === strpos( $tag, '[/' ) );
+		$type    = ( false !== stripos( $tag, 'menu-section' ) ) ? 'section' : 'item';
+
+		$label = '';
+		foreach ( array( 'name', 'title' ) as $attr ) {
+			if ( preg_match( '/\b' . $attr . '\s*=\s*"((?:\\\\.|[^"\\\\])*)"/i', $tag, $a ) ) {
+				$label = str_replace( array( '\\"', "\\'" ), array( '"', "'" ), $a[1] );
+				break;
+			}
+		}
+
+		if ( ! $closing ) {
+			if ( 'item' === $type ) {
+				for ( $i = count( $stack ) - 1; $i >= 0; $i-- ) {
+					if ( 'section' === $stack[ $i ]['type'] ) {
+						$stack[ $i ]['items']++;
+						break;
+					}
+				}
+			}
+			$stack[] = array( 'type' => $type, 'label' => $label, 'items' => 0 );
+			continue;
+		}
+
+		$matched = false;
+		while ( $stack ) {
+			$open = array_pop( $stack );
+
+			if ( $open['type'] === $type ) {
+				$matched = true;
+				if ( 'section' === $type && 0 === $open['items'] ) {
+					$problems[] = sprintf(
+						'The section%s has no dishes in it.',
+						$open['label'] ? ' &ldquo;' . esc_html( $open['label'] ) . '&rdquo;' : ''
+					);
+				}
+				break;
+			}
+
+			$problems[] = sprintf(
+				'The %s%s is never closed — add %s.',
+				$open['type'],
+				$open['label'] ? ' &ldquo;' . esc_html( $open['label'] ) . '&rdquo;' : '',
+				'<code>[/menu-' . $open['type'] . ']</code>'
+			);
+		}
+
+		if ( ! $matched ) {
+			$problems[] = sprintf( 'A stray %s has nothing to close.', '<code>' . esc_html( $tag ) . '</code>' );
+		}
+	}
+
+	foreach ( $stack as $open ) {
+		$problems[] = sprintf(
+			'The %s%s is never closed — add %s.',
+			$open['type'],
+			$open['label'] ? ' &ldquo;' . esc_html( $open['label'] ) . '&rdquo;' : '',
+			'<code>[/menu-' . $open['type'] . ']</code>'
+		);
+	}
+
+	return $problems;
+}
+
+/* =========================================================================
    SHORTCODES
    ========================================================================= */
 
@@ -227,6 +304,34 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 
 } );
 
+add_action( 'admin_notices', function () {
+	$screen = get_current_screen();
+	if ( ! $screen || 'edit-page' !== $screen->id ) {
+		return;
+	}
+
+	$found = get_pages( array(
+		'meta_key'   => '_wp_page_template',
+		'meta_value' => 'template-menu.php',
+		'number'     => 1,
+	) );
+	if ( ! $found ) {
+		return;
+	}
+
+	$page = $found[0];
+	if ( ! current_user_can( 'edit_post', $page->ID ) ) {
+		return;
+	}
+	if ( ! dauns_menu_check( $page->post_content ) ) {
+		return;
+	}
+
+	printf(
+		'<div class="notice notice-warning"><p><strong>Menu check —</strong> the <a href="%s">Menu page</a> has a formatting problem and will look wrong on the website.</p></div>',
+		esc_url( get_edit_post_link( $page->ID ) )
+	);
+} );
 /* wptexturize() runs at the_content priority 10 and rewrites straight
    quotes as HTML entities (&#8220; and &#8221;), which shortcode_parse_atts()
    does not recognise as delimiters. Convert both the entity and the raw
