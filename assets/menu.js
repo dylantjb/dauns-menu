@@ -39,6 +39,41 @@
 				jump.appendChild(b);
 			});
 		});
+
+		if (jump && 'IntersectionObserver' in window) {
+			var links = [].slice.call(jump.querySelectorAll('a'));
+
+			function centreActive() {
+				var a = null;
+				for (var i = 0; i < links.length; i++) {
+					if (links[i].classList.contains('is-active')) { a = links[i]; break; }
+				}
+				if (!a) return;
+				if (jump.scrollWidth > jump.clientWidth + 1) {
+					jump.scrollTo({ left: a.offsetLeft - (jump.clientWidth - a.offsetWidth) / 2, behavior: 'smooth' });
+				} else if (jump.scrollHeight > jump.clientHeight + 1) {
+					jump.scrollTo({ top: a.offsetTop - (jump.clientHeight - a.offsetHeight) / 2, behavior: 'smooth' });
+				}
+			}
+
+			var io = new IntersectionObserver(function (entries) {
+				entries.forEach(function (e) {
+					if (!e.isIntersecting) return;
+					var sec = e.target.classList.contains('mn-sub') ? e.target.closest('.mn-sec') : e.target;
+					links.forEach(function (a) {
+						var href = a.getAttribute('href');
+						a.classList.toggle('is-active', href === '#' + e.target.id || (sec && href === '#' + sec.id));
+					});
+					centreActive();
+				});
+			}, { rootMargin: '-20% 0px -70% 0px' });
+
+			var watch = secs.slice();
+			secs.forEach(function (s) {
+				[].forEach.call(s.querySelectorAll('.mn-sub[id]'), function (sub) { watch.push(sub); });
+			});
+			watch.forEach(function (s) { io.observe(s); });
+		}
 	}
 
 	if (window.jQuery && jQuery.fancybox) {

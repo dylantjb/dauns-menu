@@ -62,7 +62,8 @@
   color: var(--color-royal-blue);
   text-decoration: none;
 }
-.mn-jump a:hover {
+.mn-jump a:hover,
+.mn-jump a.is-active {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
