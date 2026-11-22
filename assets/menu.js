@@ -121,6 +121,19 @@
 		openTarget(location.hash);
 	}
 
+	if (jump && document.querySelector('.mn-p-ta')) {
+		var bar = document.createElement('div');
+		bar.className = 'mn-toggle';
+		bar.innerHTML = '<button type="button" class="on" data-mode="in">Eat in</button><button type="button" data-mode="ta">Take away</button>';
+		jump.parentNode.insertBefore(bar, jump);
+		bar.addEventListener('click', function (e) {
+			var b = e.target.closest('button');
+			if (!b) return;
+			document.body.classList.toggle('mn-mode-ta', b.getAttribute('data-mode') === 'ta');
+			[].forEach.call(bar.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); });
+		});
+	}
+
 	if (window.jQuery && jQuery.fancybox) {
 		jQuery('.mn-zoom').fancybox({ loop: false, buttons: ['close'] });
 	}

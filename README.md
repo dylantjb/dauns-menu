@@ -36,7 +36,7 @@ description.
 | Shortcode | What it does |
 | --- | --- |
 | `[menu-section title="..."]` | One section of the menu. `badge="..."` adds a small chip beside the heading. |
-| `[menu-item name="..."]` | A dish. `price="..."`, `img="..."` (file name or attachment ID), `alt="..."`, `featured="1"` for a full-width photo card, `tags="..."`. |
+| `[menu-item name="..."]` | A dish. `price="..."` (or `eatin="..."` / `takeaway="..."` for two prices), `img="..."` (file name or attachment ID), `alt="..."`, `featured="1"` for a full-width photo card, `tags="..."`. |
 | `[menu-sub title="..."]` | A sub-heading inside a section. `note="..."` adds a line under it. |
 | `[menu-option label="..."]` | A choice under a dish, e.g. sizes. `note="..."` adds a note beside it. `opts="..."` on the dish titles the list. |
 | `[menu-note]` | A cream panel for a message from the kitchen. |

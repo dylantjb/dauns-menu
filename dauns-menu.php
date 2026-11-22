@@ -266,7 +266,7 @@ add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 
 add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$a = shortcode_atts( array(
-		'name' => '', 'tags' => '', 'img' => '', 'alt' => '', 'featured' => '', 'opts' => '', 'price' => '',
+		'name' => '', 'tags' => '', 'img' => '', 'alt' => '', 'featured' => '', 'opts' => '', 'price' => '', 'eatin' => '', 'takeaway' => '',
 	), $atts );
 
 	// Lift [menu-option] lines out of the description before formatting it.
@@ -299,7 +299,14 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$alt   = $a['alt'] !== '' ? $a['alt'] : $a['name'];
 	$media = dauns_mn_media( $a['img'], $alt, $a['name'], ! empty( $a['featured'] ) );
 
-	$price = $a['price'] !== '' ? '<span class="mn-price">&pound;' . esc_html( $a['price'] ) . '</span>' : '';
+	$price = '';
+	$in    = $a['eatin'] !== '' ? $a['eatin'] : $a['price'];
+	if ( $in !== '' || $a['takeaway'] !== '' ) {
+		$price = '<span class="mn-price">'
+			. ( $in !== '' ? '<span class="mn-p-in">&pound;' . esc_html( $in ) . '</span>' : '' )
+			. ( $a['takeaway'] !== '' ? '<span class="mn-p-ta">&pound;' . esc_html( $a['takeaway'] ) . '</span>' : '' )
+			. '</span>';
+	}
 
 	if ( $a['featured'] && $media ) {
 		return '<div class="mn-card">'
