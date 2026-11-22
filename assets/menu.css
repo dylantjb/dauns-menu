@@ -29,17 +29,6 @@
 }
 .mn-note strong { font-family: 'HKRequisite-Medium', sans-serif; }
 
-.mn-deal {
-  margin: .8rem 0 0;
-  padding: .7rem 1rem;
-  background: var(--color-royal-blue);
-  border-left: 6px solid var(--color-dark-orange);
-  color: var(--color-off-white);
-  font-family: 'HKRequisite-Medium', sans-serif;
-  font-size: 13px;
-  letter-spacing: .04em;
-}
-
 
 /* JUMP NAV */
 
@@ -298,6 +287,30 @@ body.mn-mode-ta .mn-p-in { display: none; }
   color: var(--color-muddy-gold);
 }
 .mn-opt-n { font-style: italic; opacity: .85; }
+
+/* DEALS & SOLD OUT */
+
+.mn-deal {
+  margin: .8rem 0 0;
+  padding: .7rem 1rem;
+  background: var(--color-royal-blue);
+  border-left: 6px solid var(--color-dark-orange);
+  color: var(--color-off-white);
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 13px;
+  letter-spacing: .04em;
+}
+.mn-item.is-out { opacity: .45; }
+.mn-out {
+  margin-left: .6rem;
+  padding: .2rem .4rem;
+  background: #8C2F12;
+  color: #F7F3EA;
+  font-family: 'HKRequisite-Medium', sans-serif;
+  font-size: 9px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
 
 
 /* RESPONSIVE */

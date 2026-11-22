@@ -266,8 +266,11 @@ add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 
 add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	$a = shortcode_atts( array(
-		'name' => '', 'tags' => '', 'img' => '', 'alt' => '', 'featured' => '', 'opts' => '', 'price' => '', 'eatin' => '', 'takeaway' => '',
+		'name' => '', 'tags' => '', 'img' => '', 'alt' => '', 'soldout' => '',
+		'featured' => '', 'opts' => '', 'price' => '', 'eatin' => '', 'takeaway' => '',
 	), $atts );
+
+	$out = ! empty( $a['soldout'] );
 
 	// Lift [menu-option] lines out of the description before formatting it.
 	$option_rows = '';
@@ -308,18 +311,20 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 			. '</span>';
 	}
 
+	$flag = $out ? '<span class="mn-out">Sold out</span>' : '';
+
 	if ( $a['featured'] && $media ) {
-		return '<div class="mn-card">'
+		return '<div class="mn-card' . ( $out ? ' is-out' : '' ) . '">'
 			. '<div class="mn-card-head"><span class="mn-name mn-name-lg">' . esc_html( $a['name'] ) . '</span>'
-			. $price . '</div>'
+			. $flag . $price . '</div>'
 			. '<div class="mn-card-media">' . $media . '</div>'
 			. '<div class="mn-card-body">' . $desc . $options . dauns_mn_tags( $a['tags'] ) . '</div>'
 			. '</div>';
 	}
 
-	return '<div class="mn-item">'
+	return '<div class="mn-item' . ( $out ? ' is-out' : '' ) . '">'
 		. '<div class="mn-item-b"><span class="mn-name">' . esc_html( $a['name'] ) . '</span>'
-		. $price . $desc . $options . dauns_mn_tags( $a['tags'] ) . '</div>'
+		. $flag . $price . $desc . $options . dauns_mn_tags( $a['tags'] ) . '</div>'
 		. ( $media ? '<span class="mn-thumb">' . $media . '</span>' : '' )
 		. '</div>';
 
