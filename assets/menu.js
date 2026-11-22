@@ -1,9 +1,20 @@
 (function () {
 	var secs = [].slice.call(document.querySelectorAll('.mn-sec'));
 	var jump = document.getElementById('mn-jump');
+	var hdr  = document.querySelector('.site-header');
+
+	function measure() {
+		var h = hdr ? Math.round(hdr.getBoundingClientRect().height) : 100;
+		document.documentElement.style.setProperty('--mn-hdr', h + 'px');
+		if (jump) {
+			document.documentElement.style.setProperty('--mn-jump-h', Math.round(jump.getBoundingClientRect().height) + 'px');
+		}
+	}
 
 	if (secs.length) {
-		if (jump) document.documentElement.style.setProperty('--mn-jump-h', Math.round(jump.getBoundingClientRect().height) + 'px');
+		measure();
+		window.addEventListener('resize', measure);
+		if (hdr && 'ResizeObserver' in window) new ResizeObserver(measure).observe(hdr);
 
 		secs.forEach(function (s) {
 			var body = s.querySelector('.mn-sec-body');
