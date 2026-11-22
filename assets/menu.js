@@ -14,6 +14,8 @@
 
 	function setCollapsed(s, collapse) {
 		s.classList.toggle('is-collapsed', collapse);
+		var b = s.querySelector('.mn-h-btn');
+		if (b) b.setAttribute('aria-expanded', collapse ? 'false' : 'true');
 	}
 
 	if (secs.length) {
