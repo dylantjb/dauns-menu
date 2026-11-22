@@ -1,6 +1,7 @@
 (function () {
 	var secs = [].slice.call(document.querySelectorAll('.mn-sec'));
 	var jump = document.getElementById('mn-jump');
+	var mq   = window.matchMedia('(max-width:900px)');
 	var hdr  = document.querySelector('.site-header');
 
 	function measure() {
@@ -85,6 +86,23 @@
 			});
 			watch.forEach(function (s) { io.observe(s); });
 		}
+
+		function sync() {
+			secs.forEach(function (s) {
+				s.classList.toggle('is-collapsed', mq.matches && s.getAttribute('data-open') !== '1');
+			});
+		}
+		sync();
+		if (mq.addEventListener) mq.addEventListener('change', sync); else mq.addListener(sync);
+
+		secs.forEach(function (s) {
+			var b = s.querySelector('.mn-h-btn');
+			if (!b) return;
+			b.addEventListener('click', function () {
+				if (!mq.matches) return;
+				s.classList.toggle('is-collapsed');
+			});
+		});
 	}
 
 	if (window.jQuery && jQuery.fancybox) {

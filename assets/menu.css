@@ -106,6 +106,17 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
+.mn-chev {
+  display: none;
+  width: 10px;
+  height: 10px;
+  margin-left: auto;
+  border-right: 2px solid var(--color-royal-blue);
+  border-bottom: 2px solid var(--color-royal-blue);
+  transform: rotate(45deg);        /* collapsed = pointing down */
+  transition: transform .25s ease;
+}
+.mn-badge + .mn-chev { margin-left: .5rem; }
 
 
 /* SUB-HEADS */
@@ -268,6 +279,14 @@
 
 
 /* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .mn-chev { display: block; }
+  .mn-h-btn { cursor: pointer; }
+  .mn-sec.is-collapsed .mn-sec-body { display: none; }
+  .mn-sec:not(.is-collapsed) .mn-chev { transform: rotate(-135deg); }
+  .mn-card-media { max-width: none; }
+}
 
 @media (max-width: 600px) {
   .mn-thumb { flex: 0 0 92px; width: 92px; height: 92px; }

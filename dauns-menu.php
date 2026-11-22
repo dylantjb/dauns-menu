@@ -253,12 +253,14 @@ add_shortcode( 'menu-sub', function ( $atts ) {
 } );
 
 add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
-	$a  = shortcode_atts( array( 'title' => '', 'badge' => '' ), $atts );
+	$a  = shortcode_atts( array( 'title' => '', 'badge' => '', 'open' => '' ), $atts );
 	$id = sanitize_title( $a['title'] );
 	$b = $a['badge'] ? '<span class="mn-badge">' . esc_html( $a['badge'] ) . '</span>' : '';
-	return '<section class="mn-sec" id="' . esc_attr( $id ) . '" data-title="' . esc_attr( $a['title'] ) . '">'
-		. '<h2 class="mn-h"><button type="button" class="mn-h-btn">'
-		. '<span class="mn-h-t">' . esc_html( $a['title'] ) . '</span>' . $b . '</button></h2>'
+	return '<section class="mn-sec" id="' . esc_attr( $id ) . '" data-title="' . esc_attr( $a['title'] ) . '"'
+		. ( $a['open'] ? ' data-open="1"' : '' ) . '>'
+		. '<h2 class="mn-h"><button type="button" class="mn-h-btn" aria-expanded="true">'
+		. '<span class="mn-h-t">' . esc_html( $a['title'] ) . '</span>' . $b
+		. '<span class="mn-chev" aria-hidden="true"></span></button></h2>'
 		. '<div class="mn-sec-body">' . do_shortcode( $content ) . '</div></section>';
 } );
 
