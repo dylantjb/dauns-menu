@@ -355,3 +355,25 @@ body.mn-mode-ta .mn-p-in { display: none; }
   }
   .page-template-template-menu .entry-content > .mn-jump a { white-space: normal; }
 }
+
+
+/* PRINT */
+
+@media print {
+  .parallax, .mini-cart, .cart-toggle, .mn-jump, .mn-toggle, .mn-chev,
+  .site-header, .site-footer, .mn-card-media { display: none !important; }
+
+  .page-template-template-menu #page { background: #fff !important; }
+
+  .mn-sec-body { display: block !important; }
+  .mn-sec { margin-bottom: 1.4rem; }
+  .mn-item { break-inside: avoid; padding: .45rem 0; }
+
+  .mn-note { border-left: 3px solid #000; background: none !important; }
+
+  .mn-tag, .mn-badge, .mn-out {
+    background: none !important;
+    border: 1px solid #000 !important;
+    color: #000 !important;
+  }
+}
