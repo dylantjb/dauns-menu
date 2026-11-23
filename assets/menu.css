@@ -13,7 +13,7 @@
   z-index: 2;                 /* keep decorative parallax images behind */
 }
 .page-template-template-menu #page {
-  overflow: hidden;
+  overflow: clip;             /* NOT hidden — hidden kills position: sticky */
 }
 
 
