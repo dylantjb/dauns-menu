@@ -377,3 +377,11 @@ body.mn-mode-ta .mn-p-in { display: none; }
     color: #000 !important;
   }
 }
+
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+  .mn-chev { transition: none; }
+  .mn-card-media img { transition: none; }
+}
