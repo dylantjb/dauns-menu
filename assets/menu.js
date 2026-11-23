@@ -134,7 +134,12 @@
 		});
 	}
 
-	if (window.jQuery && jQuery.fancybox) {
-		jQuery('.mn-zoom').fancybox({ loop: false, buttons: ['close'] });
-	}
+	/* Fancybox reads data-caption natively — no caption callback needed.
+	   Bound to window load so a slow CDN can only cost the lightbox, never
+	   the accordion above. */
+	window.addEventListener('load', function () {
+		if (window.jQuery && jQuery.fancybox) {
+			jQuery('.mn-zoom').fancybox({ loop: false, buttons: ['close'] });
+		}
+	});
 })();
