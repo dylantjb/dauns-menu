@@ -255,6 +255,8 @@ add_shortcode( 'menu-sub', function ( $atts ) {
 add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 	$a  = shortcode_atts( array( 'title' => '', 'badge' => '', 'open' => '' ), $atts );
 	$id = sanitize_title( $a['title'] );
+	$GLOBALS['dauns_mn_cur'] = $id;
+	$GLOBALS['dauns_mn_schema'][ $id ] = array( 'name' => $a['title'], 'items' => array() );
 	$b = $a['badge'] ? '<span class="mn-badge">' . esc_html( $a['badge'] ) . '</span>' : '';
 	return '<section class="mn-sec" id="' . esc_attr( $id ) . '" data-title="' . esc_attr( $a['title'] ) . '"'
 		. ( $a['open'] ? ' data-open="1"' : '' ) . '>'
@@ -271,6 +273,11 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 	), $atts );
 
 	$out = ! empty( $a['soldout'] );
+
+	$cur = isset( $GLOBALS['dauns_mn_cur'] ) ? $GLOBALS['dauns_mn_cur'] : '';
+	if ( $a['name'] !== '' && $cur !== '' ) {
+		$GLOBALS['dauns_mn_schema'][ $cur ]['items'][] = $a['name'];
+	}
 
 	// Lift [menu-option] lines out of the description before formatting it.
 	$option_rows = '';
@@ -329,6 +336,44 @@ add_shortcode( 'menu-item', function ( $atts, $content = '' ) {
 		. '</div>';
 
 } );
+
+
+/* =========================================================================
+   MENU SCHEMA
+   ========================================================================= */
+
+add_action( 'wp_footer', function () {
+	if ( ! is_page_template( 'template-menu.php' ) ) { return; }
+
+	$schema   = isset( $GLOBALS['dauns_mn_schema'] ) ? (array) $GLOBALS['dauns_mn_schema'] : array();
+	$sections = array();
+
+	foreach ( $schema as $sec ) {
+		if ( empty( $sec['items'] ) ) { continue; }
+		$items = array();
+		foreach ( $sec['items'] as $n ) {
+			$items[] = array(
+				'@type' => 'MenuItem',
+				'name'  => html_entity_decode( $n, ENT_QUOTES, 'UTF-8' ),
+			);
+		}
+		$sections[] = array(
+			'@type'       => 'MenuSection',
+			'name'        => html_entity_decode( $sec['name'], ENT_QUOTES, 'UTF-8' ),
+			'hasMenuItem' => $items,
+		);
+	}
+	if ( ! $sections ) { return; }
+
+	echo '<script type="application/ld+json">' . wp_json_encode( array(
+		'@context'       => 'https://schema.org',
+		'@type'          => 'Menu',
+		'@id'            => home_url( '/menu/#menu' ),
+		'name'           => 'Dauns Menu',
+		'provider'       => array( '@id' => home_url( '/#organization' ) ),
+		'hasMenuSection' => $sections,
+	), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}, 30 );
 
 add_action( 'admin_notices', function () {
 	$screen = get_current_screen();
