@@ -246,12 +246,6 @@ add_shortcode( 'menu-deal', function ( $atts, $content = '' ) {
 	return '<p class="mn-deal">' . wp_kses_post( $content ) . '</p>';
 } );
 
-add_shortcode( 'menu-sub', function ( $atts ) {
-	$a = shortcode_atts( array( 'title' => '', 'note' => '' ), $atts );
-	$n = $a['note'] !== '' ? '<span class="mn-sub-note">' . esc_html( $a['note'] ) . '</span>' : '';
-	return '<h3 class="mn-sub">' . esc_html( $a['title'] ) . $n . '</h3>';
-} );
-
 add_shortcode( 'menu-section', function ( $atts, $content = '' ) {
 	$a  = shortcode_atts( array( 'title' => '', 'badge' => '', 'open' => '' ), $atts );
 	$id = sanitize_title( $a['title'] );
