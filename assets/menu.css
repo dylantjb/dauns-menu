@@ -1,7 +1,30 @@
-/* Dauns - menu page. */
+/* ==========================================================================
+   DAUNS — MENU PAGE
+   --------------------------------------------------------------------------
+   Colour roles, all measured against the pale-gold page background #D1D2C6:
+
+     royal blue  #1D4BA1   5.34:1   names, section headings, nav, GF tags
+     dark amber  #7A4A0D   4.89:1   sub-heads, warning chips
+                                    (cream on amber fill = 6.74:1)
+     olive       #565845   4.78:1   descriptions, alcohol / nut-free tags
+     rust        #8C2F12             white on rust = 8.30:1, "sold out"
+
+   The theme's raw accents (--color-dark-orange, --color-muddy-gold) are too
+   light to carry text on this background. Use them for borders and fills only.
+
+   CONTENTS
+     1. Page wrapper          8. Featured photo card
+     2. Notes                 9. Names / descriptions / prices
+     3. Jump nav             10. Tags
+     4. Price toggle         11. Option lists
+     5. Sections & headings  12. Deals & sold out
+     6. Sub-heads            13. Responsive
+     7. Dish rows            14. Print
+                             15. Reduced motion
+   ========================================================================== */
 
 
-/* PAGE WRAPPER */
+/* 1. PAGE WRAPPER ========================================================= */
 
 .page-template-template-menu .entry-content {
   opacity: 1 !important;      /* neutralise the theme's fade-in */
@@ -17,7 +40,7 @@
 }
 
 
-/* NOTES */
+/* 2. NOTES =============================================================== */
 
 .mn-note {
   background: var(--color-off-white);
@@ -30,7 +53,7 @@
 .mn-note strong { font-family: 'HKRequisite-Medium', sans-serif; }
 
 
-/* JUMP NAV */
+/* 3. JUMP NAV ============================================================ */
 
 .mn-jump {
   display: flex;
@@ -58,7 +81,7 @@
 }
 
 
-/* PRICE TOGGLE — dormant until a price attribute is used */
+/* 4. PRICE TOGGLE — dormant until a price attribute is used =============== */
 
 .mn-toggle { display: flex; gap: .5rem; margin: 0 0 1.5rem; max-width: 340px; }
 .mn-toggle button {
@@ -80,7 +103,7 @@ body.mn-mode-ta .mn-p-ta { display: inline; }
 body.mn-mode-ta .mn-p-in { display: none; }
 
 
-/* SECTIONS & HEADINGS */
+/* 5. SECTIONS & HEADINGS ================================================= */
 
 .mn-sec {
   margin: 0 0 2.4rem;
@@ -130,7 +153,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 .mn-badge + .mn-chev { margin-left: .5rem; }
 
 
-/* SUB-HEADS */
+/* 6. SUB-HEADS =========================================================== */
 
 .mn-sub {
   margin: 1.6rem 0 .6rem;
@@ -151,7 +174,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 
 
-/* DISH ROWS */
+/* 7. DISH ROWS =========================================================== */
 
 .mn-item {
   display: flex;
@@ -178,7 +201,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 .mn-zoom img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 
-/* FEATURED PHOTO CARD */
+/* 8. FEATURED PHOTO CARD ================================================= */
 
 .mn-card {
   padding: 1.4rem 0 1.6rem;
@@ -206,7 +229,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 .mn-card-body { padding-top: 1rem; max-width: 600px; }
 
 
-/* NAMES / DESCRIPTIONS / PRICES */
+/* 9. NAMES / DESCRIPTIONS / PRICES ======================================= */
 
 .mn-name {
   font-family: 'HKRequisite-Medium', sans-serif;
@@ -232,7 +255,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 
 
-/* TAGS */
+/* 10. TAGS =============================================================== */
 
 .mn-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin: .5rem 0 0; }
 
@@ -257,7 +280,8 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 
 
-/* OPTION LISTS */
+/* 11. OPTION LISTS =======================================================
+*/
 .entry-content p.mn-opts-h {
   margin: .7rem 0 .35rem;
   font-family: 'HKRequisite-Medium', sans-serif;
@@ -288,7 +312,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 .mn-opt-n { font-style: italic; opacity: .85; }
 
-/* DEALS & SOLD OUT */
+/* 12. DEALS & SOLD OUT =================================================== */
 
 .mn-deal {
   margin: .8rem 0 0;
@@ -313,7 +337,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 
 
-/* RESPONSIVE */
+/* 13. RESPONSIVE ========================================================= */
 
 @media (max-width: 900px) {
   .mn-chev { display: block; }
@@ -357,7 +381,7 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 
 
-/* PRINT */
+/* 14. PRINT ============================================================== */
 
 @media print {
   .parallax, .mini-cart, .cart-toggle, .mn-jump, .mn-toggle, .mn-chev,
@@ -379,9 +403,34 @@ body.mn-mode-ta .mn-p-in { display: none; }
 }
 
 
-/* REDUCED MOTION */
+/* 15. REDUCED MOTION ===================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   .mn-chev { transition: none; }
   .mn-card-media img { transition: none; }
+}
+
+.page-template-template-menu .central-column-thin { max-width: 1200px; }
+.mn-desc { max-width: 75ch; }
+.page-template-template-menu .mn-card-media {
+  max-width: 360px;
+}
+
+.mn-h-btn { letter-spacing: .04em; }
+.mn-h { border-bottom-width: 2px; }
+
+/* Dietary tags — same hue, different weight */
+.mn-tags .mn-tag.mn-tag-gf {
+  background: #145027;
+  border-color: #145027;
+  color: #F7F3EA;
+}
+
+.mn-tags .mn-tag.mn-tag-gfo {
+  background: transparent;
+  border-color: #145027;
+  color: #145027;
+}
+.mn-note {
+  border-left-width: 4px;
 }
